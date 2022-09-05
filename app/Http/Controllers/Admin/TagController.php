@@ -48,7 +48,10 @@ class TagController extends Controller
     {
         $input = $request->only('name');
         $this->tag::storeTag($input);
+        
         return back()->with('message', 'Date Saved Successfully');
+
+        
     }
 
     /**

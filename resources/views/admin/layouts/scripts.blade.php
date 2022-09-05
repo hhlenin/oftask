@@ -2,9 +2,6 @@
 <script src="{{ asset('admin/assets/js/datatables.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
 
-
-
-
 <!-- END SETTINGS -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-120946860-10"></script>
 
