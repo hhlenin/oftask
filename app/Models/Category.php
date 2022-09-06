@@ -18,4 +18,7 @@ class Category extends Model
         self::$category->save();
         return self::$category; 
     }
+    public function hasCategory() {
+        return $this->hasOne(Tiding::class);
+    }
 }

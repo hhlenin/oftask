@@ -1,6 +1,6 @@
 @extends('admin.master')
 
-@section('title', 'Create Category')
+@section('title', 'Update Tag')
 
 
 @section('content')
@@ -9,7 +9,7 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">
-                    <h5>Create New Category</h5>
+                    <h5>Update Tag</h5>
                 </div>
                 <div class="card-body">
                     <form action="{{route('tag.update', $tag->id)}}" method="POST">

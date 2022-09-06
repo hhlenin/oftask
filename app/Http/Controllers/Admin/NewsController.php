@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\NewsRequest;
 use App\Models\Category;
+use App\Models\PostTag;
 use App\Models\Tag;
 use App\Models\Tiding;
 use Illuminate\Http\Request;
@@ -14,13 +15,14 @@ class NewsController extends Controller
     protected $news;
     protected $category;
     protected $tag;
+    protected $post_tag;
 
-
-    function __construct(Tiding $tiding, Category $category, Tag $tag)
+    function __construct(Tiding $tiding, Category $category, Tag $tag, PostTag $post_tag)
     {
         $this->news = $tiding;
         $this->category = $category;
         $this->tag = $tag;
+        $this->post_tag = $post_tag;
     }
     /**
      * Display a listing of the resource.
@@ -29,10 +31,9 @@ class NewsController extends Controller
      */
     public function index()
     {
+        $allNews = $this->news::with('category')->get();
         return view('admin.news.index', [
-            'allNews' => $this->news::latest()
-                ->get(['title', 'body', 'image', 'category_id', 'id']),
-            
+            'allNews' => $allNews,
         ]);
     }
 
@@ -47,7 +48,6 @@ class NewsController extends Controller
             'categories' => $this->category::all(['name', 'id']),
             'tags' => $this->tag::all('name', 'id'),
         ]);
-
     }
 
     /**
@@ -58,17 +58,13 @@ class NewsController extends Controller
      */
     public function store(NewsRequest $request)
     {
-        
-        $input = $request->only([
-            'title', 'body', 'image', 'category_id', 'tag_id'
-        ]);
+        $input = $request->only(['title', 'body', 'image', 'category_id', 'tag_id']);
 
         $response = $this->news::storeNews($input);
         if ($response) {
             return back()->with('message', 'Data saved successfully');
         }
         return back()->with('error', 'Oparation Failed');
-        
     }
 
     /**
@@ -90,7 +86,17 @@ class NewsController extends Controller
      */
     public function edit($id)
     {
-        //
+        $post_tags = $this->post_tag->where('post_id', $id)->get('tag_id');
+
+        $post = $this->news::find($id);
+        if ($post) {
+            return view('admin.news.edit', [
+                'post' => $post,
+                'categories' => $this->category::all('name', 'id'),
+                'tags' => $this->tag::all('name', 'id'),
+                'post_tags' => $post_tags,
+            ]);
+        }
     }
 
     /**
@@ -100,9 +106,16 @@ class NewsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(NewsRequest $request, $id)
     {
-        //
+        // return $request;
+        $input = $request->only(['title', 'body', 'image', 'category_id', 'tag_id']);
+
+        $response = $this->news::storeNews($input, $id);
+        if ($response) {
+            return back()->with('message', 'Data updated successfully');
+        }
+        return back()->with('error', 'Oparation Failed');
     }
 
     /**
@@ -113,6 +126,24 @@ class NewsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $news = $this->news::find($id);
+        if ($news) {
+            if (isset($news->image)) {
+                if (file_exists($news->image)) {
+                    unlink($news->image);
+                }
+            }
+            $news->delete();
+
+            $post_tags = $this->post_tag::where('post_id', $id)->get();
+            if ($post_tags) {
+                foreach ($post_tags as $post_tag) {
+                    $post_tag->delete();
+                }
+            }
+            return redirect(route('news.index'))->with('message', 'Data deleted successfully');
+        }
+
+        return redirect(route('news.index'))->with('error', 'no data found');
     }
 }

@@ -1,6 +1,6 @@
 @extends('admin.master')
 
-@section('title', 'Manage Categories')
+@section('title', 'All News')
 
 @section('content')
 
@@ -13,7 +13,6 @@
                     <th>Description</th>
                     <th>Image</th>
                     <th>Category</th>
-                    <th>Tags</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -22,10 +21,9 @@
                     <tr>
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $news->title }}</td>
-                        <td>{{ $news->body }}</td>
-                        <td>{{ $news->image }}</td>
-                        <td>{{ $news->category }}</td>
-                        <td>{{ $news->tags }}</td>
+                        <td>{{ Str::limit($news->body, 50) }}</td>
+                        <td><img src="{{ $news->image != null ? asset($news->image) : asset('default/default.jpg') }}" alt="" style="width: 50px; height: 50px; object-fit: cover"></td>
+                        <td>{{ $news->category->name }}</td>
                         <td>
                             <a href="{{ route('news.edit', $news->id) }}" class="btn"><i class="align-middle"
                                     data-feather="edit"></i> Edit
