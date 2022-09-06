@@ -3,10 +3,19 @@
 namespace App\Http\Controllers\Reader;
 
 use App\Http\Controllers\Controller;
+use App\Models\Comment;
 use Illuminate\Http\Request;
+use Session;
 
 class CommentController extends Controller
 {
+    protected $comment;
+
+    function __construct(Comment $comment)
+    {
+        $this->comment = $comment;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -35,7 +44,17 @@ class CommentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'comment' => 'required'
+        ]);
+
+        $this->comment::create([
+            'tiding_id' => $request->post_id,
+            'reader_id' => Session::get('reader_id'),
+            'comment' => $request->comment
+        ]);
+        return back()->with('message', 'Comment Recorded');
+
     }
 
     /**

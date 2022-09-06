@@ -5,6 +5,8 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\NewsController;
 use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Front\FrontController;
+use App\Http\Controllers\Reader\CommentController;
+use App\Http\Controllers\Reader\LikeController;
 use App\Http\Controllers\User\AuthController;
 use Illuminate\Support\Facades\Route;
 
@@ -22,6 +24,9 @@ Route::post('/user/logout', [AuthController::class, 'logout'])->name('user.logou
 
 
 Route::get('/user/dashboard', [FrontController::class, 'dashboard'])->name('user.dashboard')->middleware('logged_user');
+
+Route::resource('/news-comments', CommentController::class)->middleware('logged_user');
+Route::resource('/news-likes', LikeController::class)->middleware('logged_user');
 
 
 Route::middleware([

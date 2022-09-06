@@ -1,17 +1,16 @@
 @extends('front.master')
 
-@section('title',)
-{{$post->title}}
+@section('title')
+    {{ $post->title }}
 @endsection
 
 @section('content')
-
     <div class="row">
         <div class="col-md-12">
             <div class="card">
                 <div class="card-heading">
-                    <h3>{{$post->title}}</h3>
-                    <p><strong>{{$post->created_at->format('d M, Y')}}</strong></p>
+                    <h3>{{ $post->title }}</h3>
+                    <p><strong>{{ $post->created_at->format('d M, Y') }}</strong></p>
 
 
                 </div>
@@ -27,37 +26,47 @@
             </div>
         </div>
     </div>
+
+    {{-- COMMENTS SECTION --}}
     <div class="row">
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
                     <h5 class="text-muted">Discussion</h5>
                 </div>
-                <div class="col-md-8 text-start p-2 mb-2">
-                    <div>
-                        <img
-                        src="{{ $post->image != null ? asset($post->image) : asset('default/default.jpg') }}" alt=""
-                        style="height: 20px; width: 20px; border-radius: 50%; object-fit: cover">
-                        <span>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Provident ipsum quod in voluptates! Itaque officiis provident beatae enim exercitationem voluptate.</span>
-                    </div>
-                </div>
 
-                <div class="col-md-8 text-end p-2 mb-1 bg-dark text-light">
-                    <div>
-                        <img
-                        src="{{ $post->image != null ? asset($post->image) : asset('default/default.jpg') }}" alt=""
-                        style="height: 20px; width: 20px; border-radius: 50%; object-fit: cover">
-                        <span>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Provident ipsum quod in voluptates! Itaque officiis provident beatae enim exercitationem voluptate.</span>
-                    </div>
-                </div>
+                <div class="card-body">
+                    @foreach ($comments as $comment)
+                        <div class="col-md-8 p-2 mb-2 {{ $comment->reader->id == Session::get('reader_id') ? 'text-end bg-dark text-light' : 'text-start' }}">
+                            <div>
+                                <img src="{{ $comment->reader->image != null ? asset($post->image) : asset('default/user.jpg') }}"
+                                    alt="" style="height: 20px; width: 20px; border-radius: 50%; object-fit: cover">
+                                <span class="text-muted">{{$comment->reader->name}}</span>
+                                <div>
+                                    <span>{{$comment->comment}}</span>
+                                    <a>Edit</a>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
 
-                <div class="col-md-8 text-end p-2 mb-1 bg-dark text-light">
-                    <span>Post Comment</span>
-                    <input type="text" class="form-control mb-1">
-                    <input type="submit">
+                    {{-- INSERT COMMENTS --}}
+
+                    
+                    <form action="{{ route('news-comments.store') }}" method="POST">
+                        @csrf
+
+                        <input type="hidden" name="post_id" value="{{ $post->id }}">
+
+                        <div class="col-md-8 text-end p-2 mb-1 bg-dark text-light">
+                            <span>Post Comment</span>
+                            <input type="text" name="comment" class="form-control mb-1">
+                            <input type="submit">
+                        </div>
+                    </form>
+
                 </div>
             </div>
         </div>
     </div>
-
 @endsection
