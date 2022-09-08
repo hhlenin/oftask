@@ -1,6 +1,6 @@
 <nav id="sidebar" class="sidebar js-sidebar">
     <div class="sidebar-content js-simplebar">
-        <a class="sidebar-brand" href="index.html">
+        <a class="sidebar-brand" href="{{route('front.index')}}">
             <span class="sidebar-brand-text align-middle">
                 AdminKit
                 <sup><small class="badge bg-primary text-uppercase">Pro</small></sup>
@@ -16,15 +16,26 @@
 
 
         <ul class="sidebar-nav">
-            <li class="sidebar-header">
-                Categories
-            </li>
-            <li class="sidebar-item active">
-                <a class="sidebar-link" href="{{route('dashboard')}}">
-                    <i class="align-middle" data-feather="sliders"></i> <span class="align-middle">Dashboards</span>
-                </a>
+            @if (Session::has('reader_id'))
+                <li class="sidebar-item active">
+                    <a class="sidebar-link" href="{{ route('user.dashboard') }}">
+                        <i class="align-middle" data-feather="sliders"></i> <span class="align-middle">Dashboards</span>
+                    </a>
 
+                </li>
+            @endif
+
+            <span>NEWS CATEGORIES</span>
+
+            @foreach ($categories as $category)
+            <li class="sidebar-item">
+                <a class="sidebar-link" href='{{ url("/categorized-news/$category->id") }}'>
+                    <i class="align-middle" data-feather="corner-up-right"></i> <span class="align-middle">{{$category->name}}</span>
+                </a>
             </li>
+            @endforeach
+
+
 
 
 

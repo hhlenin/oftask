@@ -7,8 +7,8 @@
     <div class="row">
         @foreach ($posts as $post)
             <div class="col-md-4">
-                <div class="card">
-                    <img class="card-img-top" src="{{ asset('/') }}admin/assets/img/photos/unsplash-1.jpg" alt="Unsplash">
+                <div class="card" style="height: 580px">
+                    <img class="card-img-top" src="{{ asset($post->image) }}" alt="Unsplash">
                     <div class="card-header">
                         <h5 class="card-title mb-0">{{$post->title}}</h5>
                     </div>

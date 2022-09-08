@@ -4,9 +4,19 @@ namespace App\Http\Controllers\Reader;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Likes;
+use Session;
+
 
 class LikeController extends Controller
 {
+
+    protected $is_liked;
+
+    function __construct(Likes $likes)
+    {
+        $this->is_liked = $likes;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -35,7 +45,39 @@ class LikeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $input = $request->only([
+            'is_liked', 'tiding_id'
+        ]);
+        
+        $like = $this->is_liked::where('tiding_id', $input['tiding_id'])->where('reader_id', Session::get('reader_id'))->first();
+
+       
+        if (!isset($like)) {
+            $this->is_liked::create([
+                'tiding_id' => $input['tiding_id'],
+                'reader_id' => Session::get('reader_id'),
+                'is_liked' => $input['is_liked'],
+            ]);
+            return back()->with('message', 'Reaction Recorded');
+        }
+
+
+        elseif($like->is_liked == $input['is_liked']) {
+            $this->is_liked::where('reader_id', Session::get('reader_id'))->update([
+                'is_liked' => 0,
+            ]);
+            return back()->with('message', 'Reaction Recorded');
+        }
+
+        else {
+            $this->is_liked::where('reader_id', Session::get('reader_id'))->update([
+                'is_liked' => $input['is_liked'],
+            ]);
+            return back()->with('message', 'Reaction Recorded');
+        }
+        
+
+    
     }
 
     /**

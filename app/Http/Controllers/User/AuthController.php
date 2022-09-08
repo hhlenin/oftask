@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Reader;
 use Illuminate\Http\Request;
 use Session;
+use App\Http\Requests\UserRegisterRequest;
+use Redirect;
 
 class AuthController extends Controller
 {
@@ -17,21 +19,18 @@ class AuthController extends Controller
     }
 
     public function loginPage()
-    {
+    {   
+        Redirect::setIntendedUrl(url()->previous());
         return view('user.auth.login');
     }
     public function registerPage()
-    {
+    {   
+        Redirect::setIntendedUrl(url()->previous());
         return view('user.auth.register');
     }
 
-    public function register(Request $request)
+    public function register(UserRegisterRequest $request)
     {
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required|unique:users',
-            'password' => "required"
-        ]);
 
         $input = $request->only([
             'name', 'email', 'password'
@@ -61,7 +60,8 @@ class AuthController extends Controller
             }
         }
 
-        return back()->with("error", "Credential doesn't match");
+        // return back()->with("error", "Credential doesn't match");
+        return redirect()->intended();
 
     }
 

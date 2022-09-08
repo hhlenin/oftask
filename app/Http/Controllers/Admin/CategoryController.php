@@ -78,7 +78,7 @@ class CategoryController extends Controller
                 'category' => $categoryInfo,
             ]);
         }
-        return redirect(route('category.index'))->with('message', 'No Data found');
+        abort(404);
     }
 
     /**

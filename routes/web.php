@@ -10,23 +10,38 @@ use App\Http\Controllers\Reader\LikeController;
 use App\Http\Controllers\User\AuthController;
 use Illuminate\Support\Facades\Route;
 
+// Route::get('/test', [FrontController::class, 'test'])->name('test');
 
+
+// Frontpage Routes
 Route::get('/', [FrontController::class, 'index'])->name('front.index');
-Route::get('/post/{id}', [FrontController::class, 'details'])->name('post.details');
+Route::get('/post/{slug}', [FrontController::class, 'details'])->name('post.details');
+Route::get('/categorized-news/{id}', [FrontController::class, 'categorizedNews'])->name('front.categorized');
 
 // Reader Login & Register
-Route::get('/user/login', [AuthController::class, 'loginPage'])->name('user.loginview')->middleware('logout_user');
-Route::get('/user/register', [AuthController::class, 'registerPage'])->name('user.registerview')->middleware('logout_user');
+Route::group([], function(){
+    Route::get('/user/login', [AuthController::class, 'loginPage'])->name('user.loginview');
+    Route::get('/user/register', [AuthController::class, 'registerPage'])->name('user.registerview');
+});
 
+// User Auth Controlling Route
 Route::post('/user/register/auth', [AuthController::class, 'register'])->name('user.register');
 Route::post('/user/login/auth', [AuthController::class, 'login'])->name('user.login');
 Route::post('/user/logout', [AuthController::class, 'logout'])->name('user.logout');
 
 
-Route::get('/user/dashboard', [FrontController::class, 'dashboard'])->name('user.dashboard')->middleware('logged_user');
+Route::group(['middleware' => 'logged_user'], function(){
+    Route::get('/user/dashboard', [FrontController::class, 'dashboard'])->name('user.dashboard')->middleware('logged_user');
+    
+    // Like/Comment Controller
+    Route::resource('/news-comments', CommentController::class)->middleware('logged_user');
+    Route::resource('/news-likes', LikeController::class)->middleware('logged_user');
 
-Route::resource('/news-comments', CommentController::class)->middleware('logged_user');
-Route::resource('/news-likes', LikeController::class)->middleware('logged_user');
+});
+
+
+
+
 
 
 Route::middleware([
