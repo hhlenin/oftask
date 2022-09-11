@@ -12,7 +12,8 @@
 	<meta name="keywords" content="adminkit, bootstrap, bootstrap 5, admin, dashboard, template, responsive, css, sass, html, theme, front-end, ui kit, web">
 
     @include('admin.layouts.css')
-	@yield('css')
+    <script src="https://code.jquery.com/jquery-3.6.1.js"></script>
+    @yield('css')
 </head>
 
 
@@ -60,7 +61,54 @@
 			</footer>
 		</div>
 	</div>
+    <script>
 
+        function getData() {
+            $.ajax({
+                type: "GET",
+                dataType: "json",
+                url: "/all-post",
+                success:function (allPost){
+                    console.log(allPost)
+                    let rows = ''
+                    $.each(allPost,function (key, value){
+                        rows += '<div class="col-md-4">'
+                        rows += '<div class="card" style="height: 580px">'
+                        rows += '<img class="card-img-top" src="'+ value.image  + '">'
+                        // rows += '<img class="card-img-top" src="'+ value.image==null ?  value.image : 'no.jpg' + '">'
+                        rows += '<div class="card-header">'
+                        rows += '<h5 class="card-title mb-0">'+value.title +'</h5>'
+                        rows += '</div>'
+                        rows += '<div class="card-body">'
+                        rows += '<p class="card-text">' + value.body.replace( /(<([^>]+)>)/ig, '').substring(0,150)+ '</p>'
+                        rows += '<a href="/post/' + value.id + '" class="btn btn-primary card-link">Read More</a>'
+                        rows += '</div>'
+                        rows += '</div>'
+                        rows += '</div>'
+
+                    })
+
+                    $('#template').html(rows)
+                }
+            })
+        }
+
+
+        function notify(message) {
+            window.notyf.open({
+                type :"default",
+                message : message,
+                duration : 5000,
+                ripple : true,
+                dismissible : true,
+                position: {
+                    x: 'right',
+                    y: 'top'
+                }
+            });
+        }
+    </script>
+@yield('ajax')
 @include('admin.layouts.scripts')
 @yield('javascript')
 </body>

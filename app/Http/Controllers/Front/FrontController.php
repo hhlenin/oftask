@@ -27,7 +27,7 @@ class FrontController extends Controller
     }
 
 
-    public function index() 
+    public function index()
     {
         return view('front.home.home', [
             'posts' => $this->post::latest()->get(),
@@ -35,9 +35,15 @@ class FrontController extends Controller
         ]);
     }
 
-    public function details($id) 
+    public function allPost(){
+
+        $posts = $this->post::latest()->get();
+        return response()->json($posts);
+    }
+
+    public function details($id)
     {
-        
+
         $post = $this->post::where('id', $id)->with('category')->first();
         // return $post != null;
         if ($post != null) {
@@ -57,7 +63,7 @@ class FrontController extends Controller
             ]);
         }
         abort(404);
-        
+
     }
 
     public function dashboard()
@@ -80,7 +86,7 @@ class FrontController extends Controller
             abort(404);
 
         }
-        
+
 
     }
 

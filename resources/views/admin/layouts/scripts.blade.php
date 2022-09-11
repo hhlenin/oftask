@@ -6,6 +6,7 @@
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-120946860-10"></script>
 
 
+
 @if (Session::has('message'))
     <script>
          window.notyf.open({

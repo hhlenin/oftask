@@ -25,3 +25,12 @@
     </div>
 
 @endsection
+
+@section('ajax')
+
+    <script>
+        getData();
+        setInterval("getData()", 10000)
+    </script>
+
+@endsection

@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Tiding extends Model
 {
     use HasFactory;
+    protected $fillable = ['title', 'body', 'category_id'];
+
     public function getRouteKeyName()
     {
         return ‘slug’;

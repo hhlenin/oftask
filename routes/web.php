@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [FrontController::class, 'index'])->name('front.index');
 Route::get('/post/{slug}', [FrontController::class, 'details'])->name('post.details');
 Route::get('/categorized-news/{id}', [FrontController::class, 'categorizedNews'])->name('front.categorized');
+Route::get('/all-post', [FrontController::class, 'allPost'])->name('all.post');
+
 
 // Reader Login & Register
 Route::group([], function(){
@@ -31,11 +33,15 @@ Route::post('/user/logout', [AuthController::class, 'logout'])->name('user.logou
 
 
 Route::group(['middleware' => 'logged_user'], function(){
-    Route::get('/user/dashboard', [FrontController::class, 'dashboard'])->name('user.dashboard')->middleware('logged_user');
-    
+    Route::get('/user/dashboard', [FrontController::class, 'dashboard'])->name('user.dashboard');
+
     // Like/Comment Controller
-    Route::resource('/news-comments', CommentController::class)->middleware('logged_user');
-    Route::resource('/news-likes', LikeController::class)->middleware('logged_user');
+    Route::resource('/news-comments', CommentController::class);
+    Route::post('/store/comment', [CommentController::class, 'storeComment']);
+    Route::get('/fetch-comments/{news_id}', [CommentController::class, 'fetchComments']);
+
+
+    Route::resource('/news-likes', LikeController::class);
 
 });
 

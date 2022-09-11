@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('tidings', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('category_id');
+            $table->foreignId('category_id')->constrained();
             $table->string('title');
             $table->longText('body');
             $table->text('image')->nullable();

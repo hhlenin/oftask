@@ -26,6 +26,25 @@ class CommentController extends Controller
         //
     }
 
+    public function storeComment(Request $request)
+    {
+//        return $request;
+        $comment = $this->comment::create([
+            'tiding_id' => $request->post_id,
+            'reader_id' => Session::get('reader_id'),
+            'comment' => $request->comment
+        ]);
+        return response()->json($comment);
+
+    }
+
+    public function fetchComments($news_id)
+    {
+        $comments = $this->comment::where('tiding_id', $news_id)->orderBy('created_at', 'desc')->with('reader')->get();
+
+        return response()->json($comments);
+    }
+
     /**
      * Show the form for creating a new resource.
      *
